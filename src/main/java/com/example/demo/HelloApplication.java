@@ -23,12 +23,12 @@ public class HelloApplication extends Application  {
         stage.setScene(scene);
         stage.show();
          */
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("main.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Envoyer!");
         stage.setScene(scene);
 
-        EnvoiController envoiController = fxmlLoader.getController();
+        DiscoveryController envoiController = fxmlLoader.getController();
         envoiController.setPrimaryStage(stage);
 
         stage.show();
