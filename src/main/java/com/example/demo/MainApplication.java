@@ -34,6 +34,11 @@ public class MainApplication extends Application {
         scheduler.scheduleAtFixedRate(this::updateEdgeServersList, 0, 10, TimeUnit.SECONDS);
 
         primaryStage.show();
+
+        if (!Network.login()) {
+            System.out.println("Broker login failed");
+            System.exit(-99);
+        }
     }
 
     private void updateEdgeServersList() {
