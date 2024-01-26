@@ -4,9 +4,14 @@ import org.eclipse.paho.client.mqttv3.*;
 
 import java.net.InetAddress;
 import java.util.Timer;
+import java.util.concurrent.CountDownLatch;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class Network {
-    public static String nodeId;
+    public static String nodeId, _temp;
+    private static CountDownLatch latch = new CountDownLatch(1);
 
     public static boolean isLoggedIn() {
         return nodeId != null;
@@ -45,6 +50,54 @@ public class Network {
         } catch (Exception ex) {
             System.out.println(ex.toString());
             return false;
+        } finally {
+            MqttInstance.tryDisconnect(client);
+        }
+    }
+
+    public static String[] getServers(){
+        MqttClient client = null;
+
+        try {
+            client = MqttInstance.connect();
+            client.subscribe("demande_topic");
+            MqttInstance.sendMessage(client, "demande_topic", "topic?");
+
+            client.setCallback(new MqttCallback() {
+                public void connectionLost(Throwable cause) {
+                }
+
+                public void messageArrived(String topic, MqttMessage message) throws Exception {
+                    if (topic.equals("demande_topic")) {
+                        _temp = message.toString();
+                        latch.countDown();  // Release the latch when message is received
+                    }
+                }
+
+                public void deliveryComplete(IMqttDeliveryToken token) {
+                }
+            });
+
+            // Wait for a message for up to 10 seconds
+            latch.await(10, TimeUnit.SECONDS);
+
+            List<String> values = new ArrayList<>();
+
+            if (_temp != null && !_temp.isEmpty()) {
+                String[] entries = _temp.split("\\n");
+
+                for (String entry : entries) {
+                    String[] parts = entry.split("\\|");
+                    if (parts.length > 0) {
+                        values.add(parts[0]);
+                    }
+                }
+            }
+
+            return values.toArray(new String[0]);
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+            return null;
         } finally {
             MqttInstance.tryDisconnect(client);
         }

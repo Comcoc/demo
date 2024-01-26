@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -62,6 +63,7 @@ public class MainApplication extends Application {
 
     private void updateEdgeServersList() {
         List<String> updatedEdgeServers = new ArrayList<>();
+        //List<String> updatedEdgeServers = Arrays.asList(Network.getServers());
 
         for (int i = 1; i <= 3; i++) {
             int randomStorageSpace = new Random().nextInt(100) + 1; // Random storage space between 1 and 100 GB
