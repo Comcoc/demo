@@ -79,6 +79,10 @@ public class Network {
         }
     }
 
+    public static String encryptDataChunk(byte[] data){
+        return "";
+    }
+
     public static boolean uploadDataChunk(String topic, String name, byte[] chunk) {
         MqttClient client = null;
 
@@ -88,7 +92,7 @@ public class Network {
         }
 
         try {
-            String bloc_fichier = "";
+            String bloc_fichier = encryptDataChunk(chunk);
             String message = "{\"topic_fichier\":\"" + topic + "\",\"nom_fichier\":\"" + name + "\",\"node_id_envoyeur\":\"" + nodeId + "\",\"fichier\":\"" + bloc_fichier + "\",\"taille_fichier\":\"" + bloc_fichier.length() + "\"}";
 
             client = MqttInstance.connect();
